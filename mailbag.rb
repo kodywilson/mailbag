@@ -10,7 +10,7 @@ Mail.defaults do
 end
 
 # retrieve first 5 messages
-emails = Mail.find(:what => :first, :count => 5)
+emails = Mail.find(:what => :first, :count => 2)
 
 # or retrieve and delete from server first 5 emails
 #emails = Mail.find_and_delete(:what => :first, :count => 5)
