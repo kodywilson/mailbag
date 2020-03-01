@@ -4,7 +4,7 @@ require 'mail'  # ruby mail library. https://github.com/mikel/mail
 require 'rest-client'
 
 # Location of json configuration file
-conf    = JSON.parse(File.read('mailbag.json'))
+conf    = JSON.parse(File.read('/run/secrets/mailbag.json'))
 
 # configure delivery and retrieval methods
 Mail.defaults do

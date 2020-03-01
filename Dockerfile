@@ -19,4 +19,6 @@ COPY Gemfile /usr/app/
 COPY Gemfile.lock /usr/app/ 
 RUN bundle install
 
-COPY . /usr/app
+COPY mailbag.rb /usr/app/
+
+CMD ["/usr/app/mailbag.rb"]
