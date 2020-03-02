@@ -10,10 +10,10 @@ conf = JSON.parse(File.read('/run/secrets/mailbag.json'))
 
 # configure delivery and retrieval methods
 Mail.defaults do
-  retriever_method :imap, address: conf['email_host'],
+  retriever_method :imap, address: conf['email_host']['host_addr'],
                           port: 993,
-                          user_name: conf['email_user'],
-                          password: conf['email_pass'],
+                          user_name: conf['email_host']['email_user'],
+                          password: conf['email_host']['email_pass'],
                           enable_ssl: true
 end
 
