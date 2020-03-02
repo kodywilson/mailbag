@@ -17,23 +17,30 @@ Mail.defaults do
                           enable_ssl: true
 end
 
-# retrieve messages - search for sender
-emails = Mail.find(keys: 'FROM ' + conf['po_from'], count: 2, what: 'last')
+conf['mail_jobs'].each do |k, v|
+  # retrieve messages - search for sender
+  case v['search']
+  when 'sender'
+    emails = Mail.find(keys: 'FROM ' + v['po_from'], count: 2, what: 'last')
+  else
+    'Error: Unknown search criteria'
+  end
 
-# loop thru all emails and push attachments to database api endpoint
-emails.each do |email|
-  # Handle attachments
-  email.attachments.each do |attachment|
-    next unless attachment.content_type.start_with?('application/')
+  # loop thru all emails
+  emails.each do |email|
+    #  push attachments to database api endpoint
+    email.attachments.each do |attachment|
+      next unless attachment.content_type.start_with?('application/')
 
-    begin
-      datey = Time.now.strftime('%Y/%m/%d')
-      headers = conf['headers']
-      headers['file_name'] = 'po_invoice_' + datey + '.xlsx'
-      response = RestClient.post conf['blob_url'], attachment.decoded, headers
-      puts response.code
-    rescue StandardError => e
-      puts "Unable to post #{filename} because #{e.message}"
+      begin
+        datey = Time.now.strftime('%Y/%m/%d')
+        headers = v['headers']
+        headers['file_name'] = k + '_' + datey + '.xlsx'
+        response = RestClient.post v['blob_url'], attachment.decoded, headers
+        puts response.code
+      rescue StandardError => e
+        puts "Unable to post #{filename} because #{e.message}"
+      end
     end
   end
 end
