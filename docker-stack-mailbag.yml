@@ -1,0 +1,20 @@
+version: "3.7"
+
+services:
+
+  mailbag:
+    image: kodywilson/ruby-mailbag
+    deploy:
+      mode: replicated
+      replicas: 1
+      labels: [APP=MAILBAG]
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+        max_attempts: 3
+        window: 120s
+      placement:
+        constraints: [node.role == manager]
+secrets:
+  mailbag:
+    external: true
