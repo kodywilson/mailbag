@@ -21,4 +21,6 @@ RUN bundle install
 
 COPY mailbag.rb /usr/app/
 
-CMD ["/usr/app/mailbag.rb"]
+COPY        entrypoint.sh /
+RUN         chmod +x /entrypoint.sh
+ENTRYPOINT  ["/entrypoint.sh"]

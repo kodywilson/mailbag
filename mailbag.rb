@@ -28,11 +28,7 @@ emails.each do |email|
           datey = Time.now.strftime("%Y/%m/%d")
           headers = conf['headers']
           headers['file_name'] = "po_invoice_" + datey + ".xlsx"
-          #puts headers
           response = RestClient.post conf['blob_url'], attachment.decoded, headers
-          #puts response.code
-          #puts response.headers
-          #puts response.body
         rescue => e
           puts "Unable to post #{filename} because #{e.message}"
         end
