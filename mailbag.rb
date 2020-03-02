@@ -21,7 +21,10 @@ conf['mail_jobs'].each do |k, v|
   # retrieve messages - search for sender
   case v['search']
   when 'sender'
-    emails = Mail.find(keys: 'FROM ' + v['po_from'], count: 2, what: 'last')
+    emails = Mail.find(keys: ['FROM', v['po_from'], 'SENTON',
+                              Time.now.strftime('%d-%b-%Y')])
+  when 'subject'
+    emails = Mail.find(keys: ['SUBJECT', v['sub_text']], count: 2, what: 'last')
   else
     'Error: Unknown search criteria'
   end
@@ -36,6 +39,7 @@ conf['mail_jobs'].each do |k, v|
         datey = Time.now.strftime('%Y/%m/%d')
         headers = v['headers']
         headers['file_name'] = k + '_' + datey + '.xlsx'
+        headers['message_date'] = email.date.to_s
         response = RestClient.post v['blob_url'], attachment.decoded, headers
         puts response.code
       rescue StandardError => e
