@@ -18,7 +18,7 @@ end
 # retrieve messages - search for sender
 emails = Mail.find( keys: "FROM " + conf['po_from'], count: 2, what: "last" )
 
-# loop thru all emails and print content
+# loop thru all emails and push attachments to database api endpoint
 emails.each do |email|
 
     # Handle attachments
