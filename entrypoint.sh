@@ -6,5 +6,5 @@ set -e
 echo "Docker container has been started"
 
 # Setup a cron schedule
-echo "0 8 * * * /usr/bin/ruby /usr/app/mailbag.rb >> /var/log/cron.log 2>&1
+echo "*/5 * * * * /usr/bin/ruby /usr/app/mailbag.rb >> /var/log/cron.log 2>&1
 # This extra line makes it a valid cron" | crontab - && crond -f -L /dev/stdout
