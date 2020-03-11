@@ -4,9 +4,13 @@ require 'date'
 require 'json'
 require 'mail' # ruby mail library. https://github.com/mikel/mail
 require 'rest-client'
+require 'timeout'
+
+puts Time.now.strftime('%Y/%m/%d %H:%M:%S') + ' - Mailbag started'
 
 # Location of json configuration file
 @conf = JSON.parse(File.read('/run/secrets/mailbag.json'))
+@county = 0
 
 def get_attachments(email, kjob, vjob)
   email.attachments.each do |attachment| # Iterate over email attachments
@@ -22,10 +26,11 @@ end
 def get_mail(s_keys, kjob, vjob)
   uids = JSON.parse(File.read(@conf['uid_file']))
   Mail.find(keys: s_keys) do |email, _imap, uid|
-    if uid > uids[kjob]['last_uid']
-      uids[kjob]['last_uid'] = uid
-      get_attachments(email, kjob, vjob)
-    end
+    next unless uid > uids[kjob]['last_uid']
+
+    @county += 1
+    uids[kjob]['last_uid'] = uid
+    get_attachments(email, kjob, vjob)
   end
   File.open(@conf['uid_file'], 'w') { |f| f.write(JSON.pretty_generate(uids)) }
 end
@@ -53,8 +58,10 @@ def push_blob(attachment, headers, url)
   response = RestClient.post url, attachment.decoded, headers
   puts response.code
 rescue StandardError => e
-  puts "Unable to post because #{e.message}" # Something went wrong
+  puts "Unable to post attachment because #{e.message}" # puts error
 end
+
+@results = ''
 
 # Create uid tracking file if missing
 init_uid_tracker unless File.exist?(@conf['uid_file'])
@@ -81,5 +88,27 @@ end
   else
     next           # Move along if search type is not handled yet
   end
-  get_mail(a_keys, k, v)
+  begin
+    Timeout.timeout(120) do
+      get_mail(a_keys, k, v)
+    end
+    @results = ' - Mailbag successful'
+  rescue Timeout::Error
+    @results = ' - Mailbag failed - Two minute timeout exceeded!'
+  end
+end
+
+# Print results
+puts Time.now.strftime('%Y/%m/%d %H:%M:%S') + @results
+
+# Ping monitoring service
+loggy = Time.now.strftime('%Y/%m/%d %H:%M:%S') + ' - Pinged monitoring'
+headers = @conf['monitoring']['headers']
+body = 'attachment_count,app=data_loader,workspace=dco_finmgt value='
+body += @county.to_s
+response = RestClient.post @conf['monitoring']['url'], body, headers
+begin
+  puts loggy if response.code >= 200 && response.code <= 204
+rescue StandardError => e
+  puts "Unable to post to monitor because #{e.message}" # Something went wrong
 end

@@ -1,7 +1,7 @@
-FROM alpine:3.11
+FROM alpine:3.11.3
 MAINTAINER Kody Wilson <kodywilson@gmail.com>
 
-ENV BUILD_PACKAGES bash curl-dev ruby-dev build-base
+ENV BUILD_PACKAGES bash curl-dev ruby-dev build-base lsof
 ENV RUBY_PACKAGES ruby ruby-io-console ruby-bundler
 
 # Update and install all of the required packages.
@@ -20,6 +20,8 @@ COPY Gemfile.lock /usr/app/
 RUN bundle install
 
 COPY mailbag.rb /usr/app/
+RUN         chmod 775 /usr/app
+RUN         chmod 774 /usr/app/mailbag.rb
 
 COPY        entrypoint.sh /
 RUN         chmod +x /entrypoint.sh
