@@ -16,6 +16,8 @@ services:
       - 206.223.27.2
       - 10.145.140.7
       - 10.145.140.8
+    secrets:
+      - mailbag.json
 
 secrets:
   mailbag.json:
