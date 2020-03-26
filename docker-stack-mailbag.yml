@@ -18,7 +18,12 @@ services:
       - 10.145.140.8
     secrets:
       - mailbag.json
+    volumes:
+      - mailbag-data:/usr/local/lib/mailbag:rw
 
 secrets:
   mailbag.json:
     external: true
+
+volumes:
+  mailbag-data:
