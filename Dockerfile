@@ -20,8 +20,7 @@ COPY Gemfile.lock /usr/app/
 RUN bundle install
 
 COPY mailbag.rb /usr/app/
-RUN         chmod 775 /usr/app
-RUN         chmod 774 /usr/app/mailbag.rb
+RUN  mkdir /usr/local/lib/mailbag
 
 COPY        entrypoint.sh /
 RUN         chmod +x /entrypoint.sh

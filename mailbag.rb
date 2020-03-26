@@ -6,7 +6,7 @@ require 'mail' # ruby mail library. https://github.com/mikel/mail
 require 'rest-client'
 require 'timeout'
 
-puts Time.now.strftime('%Y/%m/%d %H:%M:%S') + ' - Mailbag started'
+puts Time.now.strftime('%Y-%m-%d %H:%M:%S') + ' - Mailbag started'
 
 # Location of json configuration file
 @conf = JSON.parse(File.read('/run/secrets/mailbag.json'))
@@ -37,7 +37,7 @@ end
 
 # Generate values for some of the header fields
 def h_maker(hdr, fname, e_date, kjob)
-  datey = Time.now.strftime('%Y/%m/%d')
+  datey = Time.now.strftime('%Y-%m-%d')
   hdr['file_name'] = fname + '_' + datey + '.xlsx' unless fname.nil?
   hdr['file_name'] = kjob + '_' + datey + '.xlsx' if fname.nil?
   hdr['message_date'] = e_date
@@ -99,10 +99,10 @@ end
 end
 
 # Print results
-puts Time.now.strftime('%Y/%m/%d %H:%M:%S') + @results
+puts Time.now.strftime('%Y-%m-%d %H:%M:%S') + @results
 
 # Ping monitoring service
-loggy = Time.now.strftime('%Y/%m/%d %H:%M:%S') + ' - Pinged monitoring'
+loggy = Time.now.strftime('%Y-%m-%d %H:%M:%S') + ' - Pinged monitoring'
 headers = @conf['monitoring']['headers']
 body = 'attachment_count,app=data_loader,workspace=dco_finmgt value='
 body += @county.to_s
@@ -111,4 +111,10 @@ begin
   puts loggy if response.code >= 200 && response.code <= 204
 rescue StandardError => e
   puts "Unable to post to monitor because #{e.message}" # Something went wrong
+end
+
+# Clean up mail box - all messages older than 30 days
+s_keys = ['SENTBEFORE', (Time.now - (30 * 86_400)).strftime('%d-%b-%Y')]
+Mail.find_and_delete(keys: s_keys) do |email, _imap, uid|
+  puts 'Delete: ' + uid.to_s + '   ' + email.subject + '   ' + email.date.to_s
 end
