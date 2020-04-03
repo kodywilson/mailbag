@@ -12,35 +12,42 @@ puts Time.now.strftime('%Y-%m-%d %H:%M:%S') + ' - Mailbag started'
 @conf = JSON.parse(File.read('/run/secrets/mailbag.json'))
 @county = 0
 
-def get_attachments(email, kjob, vjob)
+def file_name(file, kjob)
+  datey = Time.now.strftime('%Y-%m-%d')
+  filey = file + '_' + datey + '.xlsx' unless file.nil?
+  filey = kjob + '_' + datey + '.xlsx' if file.nil?
+  filey
+end
+
+def get_attachments(email, kjob, vjob, sender)
   email.attachments.each do |attachment| # Iterate over email attachments
     next unless attachment.content_type.start_with?('application/')
 
-    filey = attachment.filename[/.+?(?=\sMarket)/] if kjob == 'market'
-    headers = h_maker(vjob['headers'], filey, email.date.to_s, kjob)
+    filey = attachment.filename if kjob == 'market'
+    params = [filey, email.date, kjob, sender, email.from[0]]
+    headers = h_maker(vjob['headers'], params)
     push_blob(attachment, headers, vjob['blob_url'])
   end
 end
 
 # Find email and see if it is new
 def get_mail(s_keys, kjob, vjob)
-  uids = JSON.parse(File.read(@conf['uid_file']))
-  Mail.find(keys: s_keys) do |email, _imap, uid|
-    next unless uid > uids[kjob]['last_uid']
+  Mail.find(keys: s_keys) do |email, imap, uid|
+    next unless uid > @uids[kjob]['last_uid']
 
     @county += 1
-    uids[kjob]['last_uid'] = uid
-    get_attachments(email, kjob, vjob)
+    @uids[kjob]['last_uid'] = uid
+    sender = imap.uid_fetch(uid, 'ENVELOPE')[0].attr['ENVELOPE'].from[0].name
+    get_attachments(email, kjob, vjob, sender)
   end
-  File.open(@conf['uid_file'], 'w') { |f| f.write(JSON.pretty_generate(uids)) }
 end
 
 # Generate values for some of the header fields
-def h_maker(hdr, fname, e_date, kjob)
-  datey = Time.now.strftime('%Y-%m-%d')
-  hdr['file_name'] = fname + '_' + datey + '.xlsx' unless fname.nil?
-  hdr['file_name'] = kjob + '_' + datey + '.xlsx' if fname.nil?
-  hdr['message_date'] = e_date
+def h_maker(hdr, params)
+  hdr['file_name'] = file_name(params[0], params[2])
+  hdr['message_date'] = params[1].to_s
+  hdr['msg_from_addr'] = params[4]
+  hdr['msg_from_name'] = params[3]
   hdr
 end
 
@@ -65,6 +72,7 @@ end
 
 # Create uid tracking file if missing
 init_uid_tracker unless File.exist?(@conf['uid_file'])
+@uids = JSON.parse(File.read(@conf['uid_file']))
 
 # configure delivery and retrieval methods
 server = @conf['email_host']
@@ -97,6 +105,9 @@ end
     @results = ' - Mailbag failed - Two minute timeout exceeded!'
   end
 end
+
+# Update uid tracker
+File.open(@conf['uid_file'], 'w') { |f| f.write(JSON.pretty_generate(@uids)) }
 
 # Print results
 puts Time.now.strftime('%Y-%m-%d %H:%M:%S') + @results
