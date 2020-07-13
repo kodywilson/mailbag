@@ -62,3 +62,7 @@ uid_tracker.json
 
 # MacOS
 .DS_Store
+
+# Docker stuff
+build.sh
+release.sh

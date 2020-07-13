@@ -124,8 +124,8 @@ rescue StandardError => e
   puts "Unable to post to monitor because #{e.message}" # Something went wrong
 end
 
-# Clean up mail box - all messages older than 30 days
-s_keys = ['SENTBEFORE', (Time.now - (30 * 86_400)).strftime('%d-%b-%Y')]
+# Clean up mail box - all messages older than 60 days
+s_keys = ['SENTBEFORE', (Time.now - (60 * 86_400)).strftime('%d-%b-%Y')]
 Mail.find_and_delete(keys: s_keys) do |email, _imap, uid|
   puts 'Delete: ' + uid.to_s + '   ' + email.subject + '   ' + email.date.to_s
 end
