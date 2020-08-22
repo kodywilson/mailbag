@@ -1,15 +1,24 @@
 # frozen_string_literal: true
 
+require 'base64'
 require 'date'
 require 'json'
 require 'mail' # ruby mail library. https://github.com/mikel/mail
+require 'oci'
 require 'rest-client'
 require 'timeout'
 
 puts Time.now.strftime('%Y-%m-%d %H:%M:%S') + ' - Mailbag started'
 
-# Location of json configuration file
-@conf = JSON.parse(File.read('/run/secrets/mailbag.json'))
+# Shhhh...it is a secret
+secret_id = 'ocid1.vaultsecret.oc1.phx.amaaaaaap4gid6yauuvgiu5lqmvama7xavhrjvgetk7xyvduqmbfnjmaibqq'
+signer = OCI::Auth::Signers::InstancePrincipalsSecurityTokenSigner.new
+identity_client = OCI::Identity::IdentityClient.new(config: OCI::Config.new, signer: signer)
+secret_client = OCI::Secrets::SecretsClient.new(config: OCI::Config.new, signer: signer)
+secret_response = secret_client.get_secret_bundle(secret_id).data.secret_bundle_content.content
+@conf = JSON.parse(Base64.decode64(secret_response))
+# Location of json configuration file - only for running locally in dev
+#@conf = JSON.parse(File.read('/run/secrets/mailbag.json'))
 @county = 0
 
 def file_name(file, kjob)
