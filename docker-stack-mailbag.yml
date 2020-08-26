@@ -1,0 +1,29 @@
+version: "3.7"
+
+services:
+
+  mailbag:
+    image: kodywilson/ruby-mailbag:latest
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+        max_attempts: 3
+        window: 120s
+    dns:
+      - 206.223.27.1
+      - 206.223.27.2
+      - 10.145.140.7
+      - 10.145.140.8
+    secrets:
+      - mailbag.json
+    volumes:
+      - mailbag-data:/usr/local/lib/mailbag:rw
+
+secrets:
+  mailbag.json:
+    external: true
+
+volumes:
+  mailbag-data:
