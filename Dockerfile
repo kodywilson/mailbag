@@ -1,26 +1,11 @@
-FROM alpine:3.11.3
-MAINTAINER Kody Wilson <kodywilson@gmail.com>
-
-ENV BUILD_PACKAGES bash curl-dev ruby-dev build-base lsof
-ENV RUBY_PACKAGES ruby ruby-io-console ruby-bundler
-
-# Update and install all of the required packages.
-# At the end, remove the apk cache
-RUN apk update && \
-    apk upgrade && \
-    apk add $BUILD_PACKAGES && \
-    apk add $RUBY_PACKAGES && \
-    rm -rf /var/cache/apk/*
-
-RUN mkdir /usr/app 
-WORKDIR /usr/app
-
-COPY Gemfile /usr/app/ 
-COPY Gemfile.lock /usr/app/ 
-RUN bundle install
-
-COPY mailbag.rb /usr/app/
-RUN  mkdir /usr/local/lib/mailbag
+FROM oci-dco-release-docker-local.artifactory.oci.oraclecorp.com/oci-dco/detached:1.2020.08.31
+ARG BUILD_DATE
+ARG VCS_REF
+LABEL org.label-schema.build-date=$BUILD_DATE \
+    org.label-schema.vcs-ref=$VCS_REF \
+    org.label-schema.vendor="Oracle" \
+    org.label-schema.url="https://oracle.com" \
+    org.label-schema.name="DetachedETL"
 
 COPY        entrypoint.sh /
 RUN         chmod +x /entrypoint.sh

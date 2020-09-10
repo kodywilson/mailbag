@@ -122,19 +122,19 @@ File.open(@conf['uid_file'], 'w') { |f| f.write(JSON.pretty_generate(@uids)) }
 puts Time.now.strftime('%Y-%m-%d %H:%M:%S') + @results
 
 # Ping monitoring service
-loggy = Time.now.strftime('%Y-%m-%d %H:%M:%S') + ' - Pinged monitoring'
-headers = @conf['monitoring']['headers']
-body = 'attachment_count,app=data_loader,workspace=dco_finmgt value='
-body += @county.to_s
-response = RestClient.post @conf['monitoring']['url'], body, headers
-begin
-  puts loggy if response.code >= 200 && response.code <= 204
-rescue StandardError => e
-  puts "Unable to post to monitor because #{e.message}" # Something went wrong
-end
+#loggy = Time.now.strftime('%Y-%m-%d %H:%M:%S') + ' - Pinged monitoring'
+#headers = @conf['monitoring']['headers']
+#body = 'attachment_count,app=data_loader,workspace=dco_finmgt value='
+#body += @county.to_s
+#response = RestClient.post @conf['monitoring']['url'], body, headers
+#begin
+#  puts loggy if response.code >= 200 && response.code <= 204
+#rescue StandardError => e
+#  puts "Unable to post to monitor because #{e.message}" # Something went wrong
+#end
 
-# Clean up mail box - all messages older than 60 days
-s_keys = ['SENTBEFORE', (Time.now - (60 * 86_400)).strftime('%d-%b-%Y')]
+# Clean up mail box - all messages older than 90 days
+s_keys = ['SENTBEFORE', (Time.now - (90 * 86_400)).strftime('%d-%b-%Y')]
 Mail.find_and_delete(keys: s_keys) do |email, _imap, uid|
   puts 'Delete: ' + uid.to_s + '   ' + email.subject + '   ' + email.date.to_s
 end
