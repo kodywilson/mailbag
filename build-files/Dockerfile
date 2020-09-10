@@ -1,7 +1,7 @@
 FROM odo-docker-signed-local.artifactory.oci.oraclecorp.com/oci-oel7x-base:1.0.251
 LABEL maintainer="Kody Wilson <kodywilson@gmail.com"
 
-ENV BUILD_PACKAGES autoconf automake bash bzip2 cronie gcc gcc-c++ gzip libcurl-devel lsof make openssl-devel patch tar wget zlib-devel
+ENV BUILD_PACKAGES autoconf automake bash bzip2 cronie gcc gcc-c++ gzip libcurl-devel lsof make openssl-devel patch tar vim wget zlib-devel
 
 # Update and install all of the required packages.
 RUN yum update -y && \

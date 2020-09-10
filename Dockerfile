@@ -1,4 +1,4 @@
-FROM oci-dco-release-docker-local.artifactory.oci.oraclecorp.com/oci-dco/detached:1.2020.08.31
+FROM oci-dco-release-docker-local.artifactory.oci.oraclecorp.com/oci-dco/detached:1.2020.09.10
 ARG BUILD_DATE
 ARG VCS_REF
 LABEL org.label-schema.build-date=$BUILD_DATE \
