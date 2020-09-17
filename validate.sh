@@ -9,6 +9,7 @@ set -e;
 sleep 10;
 # ^^^ time is in seconds
 
+cd /usr/app
 output=$(pwd);
 if [ "${output}" != "/usr/app" ]; then
     echo something went wrong, got ${output} but expected /usr/app

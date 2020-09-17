@@ -9,5 +9,9 @@ LABEL org.label-schema.build-date=$BUILD_DATE \
 
 WORKDIR /usr/app
 
+COPY        validate.sh /
+RUN         chmod +x /validate.sh && \
+            chown odosvc:odosvc /validate.sh
+
 ENTRYPOINT [ "supercronic" ]
 CMD [ "/etc/crontab" ]
