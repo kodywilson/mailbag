@@ -1,7 +1,7 @@
-FROM odo-docker-signed-local.artifactory.oci.oraclecorp.com/oci-oel7x-base:1.0.251
+FROM odo-docker-signed-local.artifactory.oci.oraclecorp.com/oci-oel7x-base:1.0.252
 LABEL maintainer="Kody Wilson <kodywilson@gmail.com"
 
-ENV BUILD_PACKAGES autoconf automake bash bzip2 cronie gcc gcc-c++ gzip libcurl-devel lsof make openssl-devel patch tar vim wget zlib-devel
+ENV BUILD_PACKAGES autoconf automake bash bzip2 gcc gcc-c++ gzip libcurl-devel lsof make openssl-devel patch tar vim wget zlib-devel
 
 # Update and install all of the required packages.
 RUN yum update -y && \
@@ -27,15 +27,17 @@ RUN bundle install
 
 COPY mailbag.rb /usr/app/
 RUN  mkdir /usr/local/lib/mailbag && \
-     chmod 0744 /usr/app/mailbag.rb
+     chmod 0744 /usr/app/mailbag.rb && \
+     chown -R odosvc:odosvc /usr/app && \
+     chown -R odosvc:odosvc /usr/local
 
-# Set up cron job
-COPY detached-cron /etc/cron.d/detached-cron
-RUN chmod 0644 /etc/cron.d/detached-cron && \
-    chown root:root /etc/cron.d/detached-cron && \
-    sed -i -e 's~^\(session.*pam_loginuid.so\)$~#\1~' /etc/pam.d/crond && \
-    crontab /etc/cron.d/detached-cron
+# Use supercronic for cron
+COPY detached-cron /etc/crontab
+RUN setup-supercronic /etc/crontab
 
-COPY        entrypoint.sh /
-RUN         chmod +x /entrypoint.sh
-ENTRYPOINT  ["/entrypoint.sh"]
+COPY        validate.sh /
+RUN         chmod +x /validate.sh && \
+            chown odosvc:odosvc /validate.sh
+
+ENTRYPOINT [ "supercronic" ]
+CMD [ "/etc/crontab" ]
