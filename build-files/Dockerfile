@@ -1,4 +1,4 @@
-FROM odo-docker-signed-local.artifactory.oci.oraclecorp.com/oci-oel7x-base:1.0.252
+FROM odo-docker-signed-local.artifactory.oci.oraclecorp.com/oci-oel7x-base:1.0.254
 LABEL maintainer="Kody Wilson <kodywilson@gmail.com"
 
 ENV BUILD_PACKAGES autoconf automake bash bzip2 gcc gcc-c++ gzip libcurl-devel lsof make openssl-devel patch tar vim wget zlib-devel
