@@ -6,9 +6,9 @@ ENV BUILD_PACKAGES autoconf automake bash bzip2 gcc gcc-c++ gzip libcurl-devel l
 # Update and install all of the required packages.
 RUN yum update -y && \
     yum install -y $BUILD_PACKAGES && \
-    wget -O ruby-install-0.7.1.tar.gz https://github.com/postmodern/ruby-install/archive/v0.7.1.tar.gz && \
-    tar -xzvf ruby-install-0.7.1.tar.gz && \
-    cd ruby-install-0.7.1/ && \
+    wget -O ruby-install-0.8.1.tar.gz https://artifactory.oci.oraclecorp.com:443/dcs_microservices-dev-generic-local/ruby/ruby-install-0.8.1.tar.gz && \
+    tar -xzvf ruby-install-0.8.1.tar.gz && \
+    cd ruby-install-0.8.1/ && \
     make install && \
     ruby-install --system ruby 2.7.1 && \
     cd .. && \
