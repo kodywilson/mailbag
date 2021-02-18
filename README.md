@@ -2,8 +2,8 @@
 Grab emails and attachments with Ruby
 
 ## Update Image
-Follow these steps to build a new Docker image.
-Being connected to the OCNA VPN is very helpful as we compile Ruby from source.
+Follow these steps to build and deploy a new Docker image.
+Being connected to the OCNA VPN is very helpful for building this image.
 
 1. Update mailbag.rb script if updating the service.
 2. Update build-files/Dockerfile to use latest ODO base image.
@@ -12,6 +12,7 @@ Being connected to the OCNA VPN is very helpful as we compile Ruby from source.
 5. Update Dockerfile in the main directory to point to the new release in Artifactory.
 6. Push new code to Bitbucket and open pull request with at least one reviewer.
 7. Once merged into master, the new image will be built in OCI Build.
+8. Use Shepherd to release the new version.
 
 Make sure you look at build.sh and release.sh and update the credentials section if needed.
 
@@ -20,3 +21,6 @@ That build will use the new image you created with build.sh and release.sh
 
 ### OCI Build Services - DCS detached
 https://devops.oci.oraclecorp.com/build/teams/DCS%20Microservices/projects/detached
+
+#### ODO Base Images
+https://confluence.oci.oraclecorp.com/display/DCPA/Odo+Base+Images

@@ -1,5 +1,5 @@
 FROM odo-docker-signed-local.artifactory.oci.oraclecorp.com/oci-oel7x-base:1.0.268
-LABEL maintainer="Kody Wilson <kodywilson@gmail.com"
+LABEL maintainer="Kody Wilson <kody.wilson@oracle.com>"
 
 ENV BUILD_PACKAGES autoconf automake bash bzip2 gcc gcc-c++ gzip libcurl-devel lsof make openssl-devel patch tar vim wget zlib-devel
 
@@ -10,7 +10,7 @@ RUN yum update -y && \
     tar -xzvf ruby-install-0.8.1.tar.gz && \
     cd ruby-install-0.8.1/ && \
     make install && \
-    ruby-install --system ruby 2.7.1 && \
+    ruby-install --system ruby 2.7.2 && \
     cd .. && \
     yum clean all
 
