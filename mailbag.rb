@@ -3,7 +3,7 @@
 require 'base64'
 require 'date'
 require 'json'
-require 'mail' # ruby mail library. https://github.com/mikel/mail
+require 'mail'
 require 'oci'
 require 'rest-client'
 require 'timeout'
