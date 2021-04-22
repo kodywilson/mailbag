@@ -58,7 +58,11 @@ build-iPhoneSimulator/
 # Application Configuration File
 mailbag.json
 mailbag_test.json
+mailbag_365.json
 uid_tracker.json
+
+# Test Stuff
+tmp_script.rb
 
 # MacOS
 .DS_Store

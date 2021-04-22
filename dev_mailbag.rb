@@ -11,6 +11,7 @@ require 'timeout'
 puts Time.now.strftime('%Y-%m-%d %H:%M:%S') + ' - Mailbag started'
 
 @conf = JSON.parse(File.read('mailbag_test.json'))
+#@conf = JSON.parse(File.read('mailbag_365.json'))
 @county = 0
 
 def file_name(file, kjob)
@@ -127,6 +128,6 @@ puts Time.now.strftime('%Y-%m-%d %H:%M:%S') + @results
 
 # Clean up mail box - all messages older than 90 days
 s_keys = ['SENTBEFORE', (Time.now - (90 * 86_400)).strftime('%d-%b-%Y')]
-Mail.find_and_delete(keys: s_keys) do |email, _imap, uid|
-  puts 'Delete: ' + uid.to_s + '   ' + email.subject + '   ' + email.date.to_s
-end
+# Mail.find_and_delete(keys: s_keys) do |email, _imap, uid|
+#   puts 'Delete: ' + uid.to_s + '   ' + email.subject + '   ' + email.date.to_s
+# end

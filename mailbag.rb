@@ -8,6 +8,8 @@ require 'oci'
 require 'rest-client'
 require 'timeout'
 
+exit 0
+
 puts Time.now.strftime('%Y-%m-%d %H:%M:%S') + ' - Mailbag started'
 
 # Shhhh...it is a secret

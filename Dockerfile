@@ -1,4 +1,4 @@
-FROM odo-docker-signed-local.artifactory.oci.oraclecorp.com/oci-oel7x-base:1.0.272
+FROM odo-docker-signed-local.artifactory.oci.oraclecorp.com/oci-oel7x-base:1.0.275
 ARG BUILD_DATE
 ARG VCS_REF
 LABEL   maintainer="Kody Wilson <kody.wilson@oracle.com>"
