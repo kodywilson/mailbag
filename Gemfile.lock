@@ -1,4 +1,7 @@
 GEM
+  specs:
+
+GEM
   remote: https://rubygems.org/
   specs:
     domain_name (0.5.20190701)
@@ -6,15 +9,16 @@ GEM
     http-accept (1.7.0)
     http-cookie (1.0.3)
       domain_name (~> 0.5)
+    json (2.6.3)
     mail (2.6.4)
       mime-types (>= 1.16, < 4)
     mime-types (3.3.1)
       mime-types-data (~> 3.2015)
     mime-types-data (3.2019.1009)
-    mini_portile2 (2.4.0)
     netrc (0.11.0)
-    nokogiri (1.10.8)
-      mini_portile2 (~> 2.4.0)
+    nokogiri (1.14.3-x86_64-linux)
+      racc (~> 1.4)
+    racc (1.6.2)
     rest-client (2.1.0)
       http-accept (>= 1.7.0, < 2.0)
       http-cookie (>= 1.0.2, < 2.0)
@@ -25,9 +29,10 @@ GEM
     unf_ext (0.0.7.6)
 
 PLATFORMS
-  ruby
+  x86_64-linux
 
 DEPENDENCIES
+  json!
   mail!
   nokogiri!
   rest-client!
